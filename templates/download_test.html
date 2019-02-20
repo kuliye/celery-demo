@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>输入下载链接，并点击添加下载按钮，或者返回<a href="/" >首页</a></div>
+<button id="start_download" type="submit">添加下载</button>
+<input type="text" name="dowloadurl" id="dowloadurl" style="width: 400px">
+<div  id="download_panel"></div>
+
+
+
+
+</body>
+</html>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>
+    var progressid = 1;
+    function start_download(){
+        progress = 'progress' + String(progressid);
+        $("#download_panel").append('<div id="'+progress+'"></div>');
+        $.ajax({
+                type: 'POST',
+                url: '/start_download/',
+                data:{'dowloadurl':$('#dowloadurl').val()},
+                success: function(data) {
+                    update_progress(data['url'],progress);
+                },
+                error: function() {
+                    alert('Unexpected error');
+                }
+            });
+        progressid++
+    }
+    function update_progress(status_url,progress){
+        $.getJSON(status_url, function (data) {
+            if (data['state'] != 'PENDING' && data['state'] != 'PROGRESS'){
+                if ('result' in data) {
+                        // show result
+                        $('#'+progress).html('当前下载状态:'+data['state']+'<br>当前下载进度:'+data['current']+'%');
+                    }
+                    else {
+                        // something unexpected happened
+                        $('#'+progress).html('出现异常');
+                    }
+
+            }
+            else {
+                    $('#'+progress).html('当前下载状态:'+data['state']+'<br>当前下载进度:'+data['current']+'%');
+                    // rerun in 2 seconds
+                    setTimeout(function() {
+                        update_progress(status_url,progress);
+                    }, 100);
+                }
+        })
+    }
+    $(function() {
+            $('#start_download').click(start_download);
+        });
+</script>

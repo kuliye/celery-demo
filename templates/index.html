@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="{{url_for('download')}}" id="start_task">celery实现异步下载</a>
+
+
+
+
+</body>
+</html>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>
+
+    $(function() {
+            $('#start_task').click(start_test);
+        });
+</script>

@@ -1,0 +1,5 @@
+redis-server
+
+celery -A app.celery worker --loglevel=info
+
+flask run
